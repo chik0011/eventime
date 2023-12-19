@@ -13,7 +13,7 @@ class Movie {
   final String releaseDate;
   final String title;
   final bool video;
-  final num voteAverage;
+  final double voteAverage;
   final int voteCount;
 
   const Movie({
@@ -36,16 +36,16 @@ class Movie {
   factory Movie.fromJson(Map<String, dynamic> json) {
     return Movie(
       id: json['id'],
-      adult: json['adult'],
-      backdropPath: json['backdrop_path'],
+      adult: json['adult'] is bool ? json['adult'] : false,
+      backdropPath: json['backdrop_path'] ?? "none",
       genreIds: json['genre_ids'],
-      originalLanguage: json['original_language'],
-      originalTitle: json['original_title'],
-      overview: json['overview'],
+      originalLanguage: json['original_language'] ?? "none",
+      originalTitle: json['original_title'] ?? "none",
+      overview: json['overview'] ?? "none",
       popularity: json['popularity'],
-      posterPath: json['poster_path'],
-      releaseDate: json['release_date'],
-      title: json['title'],
+      posterPath: json['poster_path'] ?? "none",
+      releaseDate: json['release_date'] ?? "none",
+      title: json['title'] ?? "none",
       video: json['video'],
       voteAverage: json['vote_average'],
       voteCount: json['vote_count'],
@@ -72,6 +72,6 @@ class Movie {
   }
 
   String getVoteAverage() {
-    return voteAverage.toStringAsFixed(1);
+    return voteAverage.toStringAsFixed(1) ?? 'N/A';
   }
 }

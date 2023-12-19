@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:http/http.dart' as http;
 import 'package:eventime/models/movies.dart';
 import 'dart:convert';
@@ -16,6 +15,7 @@ Future<Movies> fetchMovies() async {
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
+
     return Movies.fromJson(jsonDecode(response.body));
   } else {
     // If the server did not return a 200 OK response,

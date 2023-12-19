@@ -16,7 +16,7 @@ class Movies {
     required this.totalResults,
   });
 
-  get movies => null;
+  get movies => Movies;
 
   List<Movie> getBestMovies() {
     List<Movie> result = [];
@@ -37,11 +37,11 @@ class Movies {
 
   factory Movies.fromJson(Map<String, dynamic> json) {
     return Movies(
-      dateMovies: json['dateMovies'],
+      dateMovies: json['dates'] != null ? DateMovies.fromJson(json['dates']) : null,
       page: json['page'],
       results: List<Movie>.from(
-          json["results"]
-              .map((x) => Movie.fromJson(x))),
+        json['results'].map((x) => Movie.fromJson(x)),
+      ),
       totalPages: json['total_pages'],
       totalResults: json['total_results'],
     );

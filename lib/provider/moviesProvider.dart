@@ -12,6 +12,9 @@ class MoviesProvider extends ChangeNotifier {
   Future<void> initMovies() async {
     try {
       futureMovies = fetchMovies();
+
+      await futureMovies;
+      notifyListeners();
     } catch (e) {
       print("Error fetching movies: $e");
     }

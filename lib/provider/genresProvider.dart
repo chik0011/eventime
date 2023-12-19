@@ -3,21 +3,25 @@ import 'package:eventime/models/Genre/genres.dart';
 import 'package:flutter/material.dart';
 
 class GenresProvider extends ChangeNotifier {
-  late Future<Genres> futureGenres;
+  late Future<Genres> _futureGenres;
 
   GenresProvider() {
-    initGenres();
+    // Call initGenres from the constructor and await it
+    _initGenres();
   }
 
-  Future<void> initGenres() async {
+  Future<void> _initGenres() async {
     try {
-      futureGenres = fetchGenres();
+      _futureGenres = fetchGenres();
+      // Wait for the future to complete before notifying listeners
+      await _futureGenres;
+      notifyListeners();
     } catch (e) {
       print("Error fetching genres: $e");
+      // Handle error appropriately
     }
   }
 
-  Future<Genres> getFutureMovies() {
-    return futureGenres;
-  }
+  // Provide a getter to access the genres once the future is complete
+  Future<Genres> get futureGenres => _futureGenres;
 }

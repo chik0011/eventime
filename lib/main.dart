@@ -1,7 +1,7 @@
 import 'package:eventime/provider/genresProvider.dart';
 import 'package:eventime/provider/moviesProvider.dart';
+import 'package:eventime/provider/eventsProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:eventime/api/movies.dart';
 import 'package:eventime/models/movies.dart';
 import 'package:eventime/screen/homeView.dart';
 import 'package:go_router/go_router.dart';
@@ -31,15 +31,10 @@ class InitApp extends State<MyApp> {
   );
 
   @override
-  void initState() {
-    super.initState();
-    futureMovies = fetchMovies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => EventsProvider()),
         ChangeNotifierProvider(create: (_) => MoviesProvider()),
         ChangeNotifierProvider(create: (_) => GenresProvider()),
       ],
