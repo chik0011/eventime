@@ -11,7 +11,7 @@ class MoviesProvider extends ChangeNotifier {
 
   Future<void> initMovies() async {
     try {
-      futureMovies = fetchMovies();
+      futureMovies = fetchMovies(1);
 
       await futureMovies;
       notifyListeners();

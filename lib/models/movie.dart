@@ -66,12 +66,22 @@ class Movie {
 
   String formatReleaseDate() {
     DateTime dateTime = DateTime.parse(releaseDate);
-    final dateFormat = DateFormat.MMM();
+    final dateFormat = DateFormat('MMM', 'fr');
 
     return "${dateTime.day} ${dateFormat.format(dateTime)} ${dateTime.year}";
   }
 
+  String formatReleaseDateYear() {
+    DateTime dateTime = DateTime.parse(releaseDate);
+
+    return "( ${dateTime.year} )";
+  }
+
   String getVoteAverage() {
     return voteAverage.toStringAsFixed(1) ?? 'N/A';
+  }
+
+  String getVoteCount() {
+    return voteCount.toStringAsFixed(0) ?? 'N/A';
   }
 }

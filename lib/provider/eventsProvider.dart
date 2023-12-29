@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-import 'dart:developer';
+import 'package:eventime/models/event.dart';
 
 class EventsProvider extends ChangeNotifier {
 
@@ -10,6 +10,30 @@ class EventsProvider extends ChangeNotifier {
 
   EventsProvider() {
     loadEvents();
+  }
+
+  Event? fetch(int idEvent) {
+    // Utilisez la méthode synchrone loadEvents
+    loadEvents();
+
+    for (var eventString in events) {
+      try {
+        var decodedEvent = json.decode(eventString);
+        var eventId = decodedEvent['id'];
+
+        if (eventId is String) {
+          if (int.tryParse(eventId) == idEvent) {
+            return Event.fromJson(decodedEvent);
+          }
+        } else if (eventId is int && eventId == idEvent) {
+          return Event.fromJson(decodedEvent);
+        }
+      } catch (e) {
+        print('Error decoding event: $e');
+      }
+    }
+
+    return null; // Retourne null si l'événement avec l'ID spécifié n'est pas trouvé
   }
 
   Future<void> printAllSharedPreferences() async {
@@ -26,19 +50,63 @@ class EventsProvider extends ChangeNotifier {
     });
   }
 
+  getPreviewEvents() {
+    if (events.isEmpty) {
+      // Load events asynchronously and wait for completion
+      loadEvents().then((_) {
+        // Parse JSON strings into Event objects
+        List<Event> eventObjects = events.map((eventString) {
+          try {
+            return Event.fromJson(json.decode(eventString));
+          } catch (e) {
+            print('Error decoding event: $e');
+            return null;
+          }
+        }).whereType<Event>().toList();
+
+        // Sort the events by releaseDate in descending order
+        eventObjects.sort((a, b) {
+          return b.releaseDate.compareTo(a.releaseDate);
+        });
+
+        // Return the sorted events
+        return eventObjects;
+      });
+    } else {
+      // If events are already loaded, parse, sort, and return them immediately
+      List<Event> eventObjects = events.map((eventString) {
+        try {
+          return Event.fromJson(json.decode(eventString));
+        } catch (e) {
+          print('Error decoding event: $e');
+          return null;
+        }
+      }).whereType<Event>().toList();
+
+      // Sort the events by releaseDate in descending order
+      eventObjects.sort((a, b) {
+        return b.releaseDate.compareTo(a.releaseDate);
+      });
+
+      // Return the sorted events
+      return eventObjects;
+    }
+  }
+
   // Load events from SharedPreferences
   Future<void> loadEvents() async {
     _prefs = await SharedPreferences.getInstance();
     var i = 1;
-
-    events = [];
 
     do {
       var eventKey = "event$i";
       var value = _prefs.getString(eventKey) ?? "";
 
       if (value.isNotEmpty) {
-        events.add(value);
+        // Check if the event is not already in the list
+        if (!events.any((event) => event == value)) {
+          events.add(value);
+        }
       }
 
       i++;
@@ -50,10 +118,24 @@ class EventsProvider extends ChangeNotifier {
     var jsonString = json.encode(eventData);
     Map<String, dynamic> decodedEvent = json.decode(jsonString);
 
-    var eventId = decodedEvent['id'];
+    var typeEvent = decodedEvent['type_event'];
 
-    // Check if eventData is already in the events list
-    if (!events.any((event) => json.decode(event) == json.decode(jsonString)) && isIdContained(eventId) == false) {
+    if(typeEvent == "movie") {
+      var eventId = decodedEvent['id'];
+
+      // Check if eventData is already in the events list
+      if (!events.any((event) => json.decode(event) == json.decode(jsonString)) && isIdContained(eventId) == false) {
+        var eventKey = "event${events.length + 1}";
+
+        // Save to SharedPreferences
+        await _prefs.setString(eventKey, jsonString);
+        // Update the events list
+        events.add(jsonString);
+        notifyListeners();
+      } else {
+        print('Event already exists in the list');
+      }
+    } else if(typeEvent == "customize") {
       var eventKey = "event${events.length + 1}";
 
       // Save to SharedPreferences
@@ -61,8 +143,8 @@ class EventsProvider extends ChangeNotifier {
       // Update the events list
       events.add(jsonString);
       notifyListeners();
-    } else {
-      print('Event already exists in the list');
+
+      printEvents();
     }
   }
 

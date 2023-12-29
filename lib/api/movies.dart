@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:eventime/models/movies.dart';
 import 'dart:convert';
 
-Future<Movies> fetchMovies() async {
+Future<Movies> fetchMovies(int page) async {
   final response = await http
       .get(
-      Uri.parse('https://api.themoviedb.org/3/movie/upcoming?language=fr-Fr&page=1'),
+      Uri.parse('https://api.themoviedb.org/3/movie/upcoming?language=fr-Fr&page=$page&region=FR'),
       headers: {
         HttpHeaders.authorizationHeader: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjYTQ0YjM1ZDE2OGRmZTIyMWQzZWYyMjBjMjZjMGE0ZSIsInN1YiI6IjYyMjIxNzMxZTE2ZTVhMDA0MmUxNTkxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hnCvyXL4L1UZtX3VRgD5qoGj1PSW9gavUCwcH_jtYa8'
       }

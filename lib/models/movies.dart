@@ -1,5 +1,6 @@
 import 'package:eventime/models/dateMovies.dart';
 import 'package:eventime/models/movie.dart';
+import 'package:eventime/api/movies.dart';
 
 class Movies {
   final DateMovies? dateMovies;
@@ -18,22 +19,44 @@ class Movies {
 
   get movies => Movies;
 
-  List<Movie> getBestMovies() {
-    List<Movie> result = [];
+  Future<List<Movie>> getBestMovies() async {
+    List<Movie> bestMovies = [];
 
-    // Sort the movies based on vote average in descending order
-    results.sort((a, b) => b.voteAverage.compareTo(a.voteAverage));
+    try {
+      Movies movies = await fetchMovies(1); // Assuming you start fetching from page 1
+      int currentPage = 1;
 
-    // Get the top 5 movies with the best vote average
-    List<Movie> top5Movies = results.take(5).toList();
+      while (bestMovies.length < 5 && currentPage <= movies.totalPages) {
+        // Fetch movies using the current page
+        movies = await fetchMovies(currentPage);
 
-    // Print the top 5 movies
-    for (var movie in top5Movies) {
-      result.add(movie);
+        // Filter movies based on releaseDate being greater than or equal to today
+        List<Movie> validMovies = movies.results
+            .where((movie) {
+          DateTime releaseDateTime = DateTime.parse(movie.releaseDate);
+
+          return releaseDateTime.isAfter(DateTime.now()) ||
+              releaseDateTime.isAtSameMomentAs(DateTime.now());
+        }).toList();
+
+        // Add valid movies to the result list
+        bestMovies.addAll(validMovies);
+
+        // Move to the next page for the next iteration
+        currentPage++;
+      }
+
+      // Sort the movies based on vote average in descending order
+      bestMovies.sort((a, b) => b.voteAverage.compareTo(a.voteAverage));
+
+      // Get the top 5 movies with the best vote average
+      return bestMovies.take(5).toList();
+    } catch (e) {
+      print('Error fetching best movies: $e');
+      return []; // Return an empty list in case of an error
     }
-
-    return result;
   }
+
 
   factory Movies.fromJson(Map<String, dynamic> json) {
     return Movies(

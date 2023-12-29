@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:eventime/provider/eventsProvider.dart';
 import '../provider/genresProvider.dart';
-import 'package:eventime/screen/homeView.dart';
 
 class MovieView extends StatefulWidget {
-  const MovieView({ super.key, required this.movie});
   final Movie movie;
+
+  const MovieView({ super.key, required this.movie});
 
   @override
   State<MovieView> createState() => _MovieViewState();
@@ -49,7 +49,7 @@ class _MovieViewState extends State<MovieView> {
     });
 
     return Scaffold(
-      backgroundColor: const Color(0xFF141414),
+      backgroundColor: const Color(0xFF121212),
       body: ListView(
         children: [
           Stack(
@@ -59,8 +59,8 @@ class _MovieViewState extends State<MovieView> {
                   return const LinearGradient(
                     begin: Alignment(0, 0.2),
                     end: Alignment.bottomCenter,
-                    colors: [Colors.black, Colors.transparent],
-                  ).createShader(Rect.fromLTRB(0, 0, rect.width, 600));
+                    colors: [Color(0xFF121212), Colors.transparent],
+                  ).createShader(Rect.fromLTRB(0, 0, rect.width, 520));
                 },
                 blendMode: BlendMode.dstIn,
                 child: Image.network(
@@ -70,7 +70,35 @@ class _MovieViewState extends State<MovieView> {
                 ),
               ),
               Positioned(
-                  top: 595,
+                top: 460,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0,),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.movie.title,
+                        style: const TextStyle(
+                            color: Color(0xFFD9D9D9),
+                            fontSize: 21,
+                            fontWeight: FontWeight.w500
+                        ),
+                      ),
+                      const SizedBox(width: 15,),
+                      Text(
+                        widget.movie.formatReleaseDateYear(),
+                        style: const TextStyle(
+                            color: Color(0xFFD9D9D9),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                  top: 500,
                   width: 320,
                   child: FutureBuilder<Genres>(
                     future: futureGenres,
@@ -86,19 +114,19 @@ class _MovieViewState extends State<MovieView> {
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(13)),
-                                    color: const Color(0xFF1E1E1E),
+                                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                    color: const Color(0xFF121212),
                                     border: Border.all(
-                                      color: const Color(0xFF434343),
+                                      color: const Color(0xFF303030),
                                       width: 1.1
                                     )
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 3.0),
-                                  margin: const EdgeInsets.only(right: 5.0, left: 10),
+                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 1.5),
+                                  margin: const EdgeInsets.only(left: 8),
                                   child: Text(
                                       categByMovie[index],
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        color: Color(0xFFD9D9D9),
                                         fontSize: 13
                                       )
                                   )
@@ -117,150 +145,277 @@ class _MovieViewState extends State<MovieView> {
                     children: [
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Home())
-                          );
+                          Navigator.of(context).pop();
                         },
-                        child: const Icon(Icons.close, color: Colors.white),
                         style: ElevatedButton.styleFrom(
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(12),
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(12),
                           primary: Colors.transparent,
                           onPrimary: Colors.black,
                         ),
+                        child: const Icon(Icons.close, color: Colors.white),
                       )
                     ],
                   )
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 541.0, left: 8, right: 8),
+                child: Divider(
+                  color: Color(0xFF191919),
+                  thickness: 2,
+                ),
               ),
               Positioned(
-                  top: 595,
-                  left: MediaQuery.of(context).size.width - 60,
+                  top: 565,
                   width:  MediaQuery.of(context).size.width,
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        widget.movie.getVoteAverage(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15
+                      Padding(
+                        padding: const EdgeInsets.only(left: 30.0),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.calendar_today_outlined,
+                              color: Color(0xFF303030),
+                              size: 21,
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Text(
+                              widget.movie.formatReleaseDate(),
+                              style: const TextStyle(
+                                  color: Color(0xFFD9D9D9),
+                                  fontSize: 14
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 3,
+                            ),
+                            const Text(
+                              "Date sortie",
+                              style: TextStyle(
+                                  color: Color(0xFF797979),
+                                  fontSize: 10
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                      const Icon(
-                        Icons.star,
-                        color: Color(0xFFBB86FC),
-                        size: 16,
-                      )
+                      Column(
+                        children: [
+                          const Icon(
+                            Icons.star_border_purple500_outlined,
+                            color: Color(0xFF303030),
+                            size: 22,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              text:
+                              widget.movie.getVoteAverage(),
+                              style: const TextStyle(fontSize: 18, color: Color(0xFFD9D9D9)),
+                              children: const <TextSpan>[
+                                TextSpan(
+                                    text: ' /10',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xFF888888))),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 3,
+                          ),
+                          const Text(
+                            "Note",
+                            style: TextStyle(
+                                color: Color(0xFF797979),
+                                fontSize: 10
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 30.0),
+                        child: Column(
+                          children: [
+                            Text(
+                              widget.movie.getVoteCount(),
+                              style: const TextStyle(
+                                color: Color(0xFF797979),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            const Text(
+                              "Popularité",
+                              style: TextStyle(
+                                  color: Color(0xFFD9D9D9),
+                                  fontSize: 14
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 3,
+                            ),
+                            const Text(
+                              "Nombre de vote",
+                              style: TextStyle(
+                                  color: Color(0xFF797979),
+                                  fontSize: 10
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   )
               ),
+              const Padding(
+                padding: EdgeInsets.only(top: 655.0, left: 8, right: 8),
+                child: Divider(
+                  color: Color(0xFF191919),
+                  thickness: 2,
+                ),
+              ),
               Container(
-                  margin: const EdgeInsets.only(top: 650),
+                  margin: const EdgeInsets.only(top: 670),
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0,),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 15.0),
                         child: Text(
-                          widget.movie.title,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold
+                          style: TextStyle(
+                            color: Color(0xFFD9D9D9),
+                            fontSize: 21,
                           ),
+                          "Synopsis",
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 20.0, top: 15.0),
-                        child: Text(
-                          widget.movie.formatReleaseDate(),
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 20.0, top: 15.0),
-                        child: Text(
-                          widget.movie.overview,
-                          style: const TextStyle(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 15.0),
+                        child: RichText(
+                          textAlign: TextAlign.justify,
+                          text: TextSpan(
+                            style: const TextStyle(
                               color: Colors.grey,
-                              fontSize: 13
+                              fontSize: 13,
+                            ),
+                            text: widget.movie.overview,
                           ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10, top: 25, bottom: 25),
+                        padding: const EdgeInsets.only(right: 10, left: 10, top: 35, bottom: 20),
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: movieAdded
-                          ? ElevatedButton(
-                            onPressed: () {
-                              // Remove element
-                              if(movieAdded) {
-                                var indexMovie = eventsProvider.indexOfEventById(widget.movie.id);
+                          ? GestureDetector(
+                              onTap: () {
+                                // Remove element
+                                if(movieAdded) {
+                                  var indexMovie = eventsProvider.indexOfEventById(widget.movie.id);
 
-                                if(indexMovie > 0) {
-                                  print("titi");
-                                  eventsProvider.removeEvent(indexMovie);
+                                  if(indexMovie > 0) {
+                                    eventsProvider.removeEvent(indexMovie);
 
-                                  setState(() {
-                                    movieAdded = !movieAdded;
-                                  });
+                                    setState(() {
+                                      movieAdded = !movieAdded;
+                                    });
+                                  }
                                 }
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF5B5B5B),
-                                side: const BorderSide(
-                                  width: 1.1,
-                                  color: Color(0xFFBB86FC),
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width - 16,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment(-1, -1),
+                                    end: Alignment(1, 1),
+                                    colors: [
+                                      Color(0xFFF69F64),
+                                      Color.fromRGBO(237, 105, 127, 0.98),
+                                      Color(0xFFC963C7),
+                                      Color(0xFFB25FF5),
+                                      Color(0xFF5882DC),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(13),
+                                  border: Border.all(
+                                      color:
+                                      const Color.fromRGBO(33, 37, 42, 1)),
                                 ),
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(20.0)
+                                child: const Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Retirer des événements', style: TextStyle(color: Colors.white),),
+                                  ],
                                 ),
-                                minimumSize: const Size.fromHeight(50)
-                            ), child: const Text('Retirer des événements', style: TextStyle(color: Colors.white))
+                              )
                           )
-                          : ElevatedButton(
-                              onPressed: () {
+                          : GestureDetector(
+                              onTap: () {
                                 var data = {
-                                'id': widget.movie.id,
-                                'type_event': 'movie',
-                                'title': widget.movie.title,
-                                'posterPath': widget.movie.posterPath,
-                                'genres': genres,
-                                'overview': widget.movie.overview,
-                                'releaseDate': widget.movie.releaseDate
+                                  'id': widget.movie.id,
+                                  'type_event': 'movie',
+                                  'title': widget.movie.title,
+                                  'posterPath': widget.movie.posterPath,
+                                  'genres': genres,
+                                  'overview': widget.movie.overview,
+                                  'releaseDate': widget.movie.releaseDate
                                 };
 
                                 if (!eventsProvider.events.any((event) => json.decode(event) == data)) {
                                   eventsProvider.addEvent(data);
-                                } else {
-                                  print('Event already exists in the list');
                                 }
 
                                 setState(() {
                                   movieAdded = !movieAdded;
                                 });
                               },
-                              style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFF5B5B5B),
-                              side: const BorderSide(
-                                width: 1.1,
-                                color: Color(0xFFBB86FC),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0)
-                              ),
-                              minimumSize: const Size.fromHeight(50)
-                              ), child:  const Text('Ajouter un événement', style: TextStyle(color: Colors.white))
+                              child: Container(
+                                width: MediaQuery.of(context).size.width - 16,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    begin: Alignment(-1, -1),
+                                    end: Alignment(1, 1),
+                                    colors: [
+                                      Color(0xFFF69F64),
+                                      Color.fromRGBO(237, 105, 127, 0.98),
+                                      Color(0xFFC963C7),
+                                      Color(0xFFB25FF5),
+                                      Color(0xFF5882DC),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(13),
+                                  border: Border.all(
+                                      color:
+                                      const Color.fromRGBO(33, 37, 42, 1)),
+                                ),
+                                child: const Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Ajouter un événement', style: TextStyle(color: Colors.white),),
+                                  ],
+                                ),
+                              )
                           )
                         ),
-                      )
+                      ),
                     ],
                   )
               ),
