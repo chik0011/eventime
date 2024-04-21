@@ -19,6 +19,23 @@ class Movies {
 
   get movies => Movies;
 
+  Future<List<Movie>> getHomeMovies() async {
+    List<Movie> result = [];
+
+    // Sort the movies based on vote average in descending order
+    // results.sort((a, b) => b.voteAverage.compareTo(a.voteAverage));
+
+    // Get the top 5 movies with the best vote average
+    List<Movie> top5Movies = results.take(4).toList();
+
+    // Print the top 5 movies
+    for (var movie in top5Movies) {
+      result.add(movie);
+    }
+
+    return result;
+  }
+
   Future<List<Movie>> getBestMovies() async {
     List<Movie> bestMovies = [];
 
@@ -56,7 +73,6 @@ class Movies {
       return []; // Return an empty list in case of an error
     }
   }
-
 
   factory Movies.fromJson(Map<String, dynamic> json) {
     return Movies(

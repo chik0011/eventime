@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -35,29 +36,21 @@ class _CreateEventViewState extends State<CreateEventView> {
 
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
+        context: context,
+        initialTime: TimeOfDay.now(),
         builder: (context, child) {
           return Localizations.override(
             context: context,
             locale: const Locale('fr', 'FR'),
             child: child,
           );
-        }
-    );
+        });
 
     if (picked != null && picked != selectedTime) {
       setState(() {
         selectedTime = picked;
       });
     }
-
-    // Format the selected time using the French locale
-    final timeFormatted = DateFormat.Hm('fr_FR').format(
-      DateTime(currentDate.year, currentDate.month, currentDate.day, selectedTime!.hour, selectedTime!.minute),
-    );
-
-    print('Selected Time: $timeFormatted');
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -116,17 +109,17 @@ class _CreateEventViewState extends State<CreateEventView> {
                   children: <Widget>[
                     // Display selected image
                     SizedBox(
-                      height: 280,
+                      height: 310,
                       child: Stack(children: <Widget>[
                         _image != null
                             ? Image.file(
                                 _image!,
-                                height: 220,
+                                height: 280,
                                 width: MediaQuery.of(context).size.width,
                                 fit: BoxFit.cover,
                               )
                             : Container(
-                                height: 220,
+                                height: 280,
                                 color: const Color(0XFF303538),
                                 child: Center(
                                   child: SvgPicture.asset(
@@ -137,7 +130,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                               ),
                         Positioned(
                           right: 20,
-                          top: 190,
+                          top: 250,
                           child: GestureDetector(
                             onTap: _getImage,
                             child: Container(
@@ -147,8 +140,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                 color: const Color(0xFF21252A),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
-                                    color:
-                                        const Color.fromRGBO(33, 37, 42, 1)),
+                                    color: const Color.fromRGBO(33, 37, 42, 1)),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,8 +151,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                     height: 38,
                                     width: 38,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(37),
+                                        borderRadius: BorderRadius.circular(37),
                                         color: const Color(0xFF21252A),
                                         boxShadow: const [
                                           BoxShadow(
@@ -170,8 +161,8 @@ class _CreateEventViewState extends State<CreateEventView> {
                                               blurRadius: 10),
                                           BoxShadow(
                                               offset: Offset(-2, -2),
-                                              color: Color.fromRGBO(
-                                                  5, 5, 5, 0.5),
+                                              color:
+                                                  Color.fromRGBO(5, 5, 5, 0.5),
                                               blurRadius: 10)
                                         ]),
                                     child: const Icon(
@@ -193,7 +184,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                         )
                       ]),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 20),
                     Column(
                       children: [
                         SizedBox(
@@ -205,17 +196,22 @@ class _CreateEventViewState extends State<CreateEventView> {
                             decoration: InputDecoration(
                                 focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Colors.grey, // Set the focused border color here
+                                    color: Colors
+                                        .grey, // Set the focused border color here
                                   ),
                                 ),
                                 hintText: 'Nom de l’événement',
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
-                                hintStyle: const TextStyle(color:  Color(0xFF696969), fontSize: 13, fontWeight: FontWeight.w400),
-                                fillColor:  Colors.transparent ,
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(10, 12, 10, 12),
+                                hintStyle: const TextStyle(
+                                    color: Color(0xFF696969),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400),
+                                fillColor: Colors.transparent,
                                 filled: true,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))
-                            ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -229,17 +225,22 @@ class _CreateEventViewState extends State<CreateEventView> {
                             decoration: InputDecoration(
                                 focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide(
-                                    color: Colors.grey, // Set the focused border color here
+                                    color: Colors
+                                        .grey, // Set the focused border color here
                                   ),
                                 ),
                                 hintText: 'Déscription de l’événement',
                                 isDense: true,
-                                contentPadding: const EdgeInsets.fromLTRB(10, 12, 10, 12),
-                                hintStyle: const TextStyle(color:  Color(0xFF696969), fontSize: 13, fontWeight: FontWeight.w400),
-                                fillColor:  Colors.transparent ,
+                                contentPadding:
+                                    const EdgeInsets.fromLTRB(10, 12, 10, 12),
+                                hintStyle: const TextStyle(
+                                    color: Color(0xFF696969),
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w400),
+                                fillColor: Colors.transparent,
                                 filled: true,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12))
-                            ),
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12))),
                           ),
                         ),
                       ],
@@ -261,8 +262,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                 color: const Color(0xFF21252A),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
-                                    color:
-                                    const Color.fromRGBO(33, 37, 42, 1)),
+                                    color: const Color.fromRGBO(33, 37, 42, 1)),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -273,9 +273,8 @@ class _CreateEventViewState extends State<CreateEventView> {
                                     height: 40,
                                     width: 40,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(37),
-                                        color: const Color(0xFF15171A),
+                                      borderRadius: BorderRadius.circular(37),
+                                      color: const Color(0xFF15171A),
                                     ),
                                     child: const Icon(
                                       Icons.calendar_today_outlined,
@@ -287,7 +286,8 @@ class _CreateEventViewState extends State<CreateEventView> {
                                   ),
                                   Text(
                                     selectedDate != null
-                                        ? DateFormat('dd-MM-yyyy').format(selectedDate)
+                                        ? DateFormat('dd-MM-yyyy')
+                                            .format(selectedDate)
                                         : 'Date',
                                     style: const TextStyle(color: Colors.white),
                                   ),
@@ -306,8 +306,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                 color: const Color(0xFF21252A),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
-                                    color:
-                                    const Color.fromRGBO(33, 37, 42, 1)),
+                                    color: const Color.fromRGBO(33, 37, 42, 1)),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -318,9 +317,8 @@ class _CreateEventViewState extends State<CreateEventView> {
                                     height: 40,
                                     width: 40,
                                     decoration: BoxDecoration(
-                                        borderRadius:
-                                        BorderRadius.circular(37),
-                                        color: const Color(0xFF15171A),
+                                      borderRadius: BorderRadius.circular(37),
+                                      color: const Color(0xFF15171A),
                                     ),
                                     child: const Icon(
                                       Icons.access_time,
@@ -332,7 +330,13 @@ class _CreateEventViewState extends State<CreateEventView> {
                                   ),
                                   Text(
                                     selectedTime != null
-                                        ? DateFormat.Hm('fr_FR').format(DateTime(currentDate.year, currentDate.month, currentDate.day, selectedTime!.hour, selectedTime!.minute))
+                                        ? DateFormat.Hm('fr_FR').format(
+                                            DateTime(
+                                                currentDate.year,
+                                                currentDate.month,
+                                                currentDate.day,
+                                                selectedTime!.hour,
+                                                selectedTime!.minute))
                                         : 'Heure',
                                     style: const TextStyle(color: Colors.white),
                                   ),
@@ -343,70 +347,107 @@ class _CreateEventViewState extends State<CreateEventView> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 60),
+                    const SizedBox(height: 40),
                     GestureDetector(
-                      onTap: () async {
-                        if(selectedDate != null && _nameEvent.text.isNotEmpty) {
-                          String nameEvent = _nameEvent.text;
-                          String descriptionEvent = _descriptionEvent.text;
-                          var dateEvent = selectedDate;
-                          var timeEvent = selectedTime;
+                        onTap: () async {
+                          if (selectedDate != null &&
+                              _nameEvent.text.isNotEmpty) {
+                            String nameEvent = _nameEvent.text;
+                            String descriptionEvent = _descriptionEvent.text;
+                            var dateEvent = selectedDate;
+                            var timeEvent = selectedTime;
 
-                          DateTime now = DateTime.now();
-                          int timestamp = now.millisecondsSinceEpoch;
+                            DateTime now = DateTime.now();
+                            int timestamp = now.millisecondsSinceEpoch;
 
-                          var savedImage;
-                          if(_image != null) {
-                            // Save picture in local
-                            final appDir = await getApplicationDocumentsDirectory();
-                            final fileName = "event_image_$timestamp.jpg";
-                            savedImage = await _image!.copy('${appDir.path}/$fileName');
+                            var savedImage;
+                            if (_image != null) {
+                              // Save picture in local
+                              final appDir =
+                                  await getApplicationDocumentsDirectory();
+                              final fileName = "event_image_$timestamp.jpg";
+                              savedImage = await _image!
+                                  .copy('${appDir.path}/$fileName');
+                            }
+
+                            var data = {
+                              'id': timestamp,
+                              'type_event': 'customize',
+                              'title': nameEvent,
+                              'posterPath':
+                                  _image != null ? savedImage.path : '',
+                              'overview': descriptionEvent,
+                              'releaseDate': DateFormat('yyyy-MM-dd HH:mm:ss')
+                                  .format(dateEvent),
+                              'releaseTime': timeEvent != null
+                                  ? formatTimeOfDay(timeEvent)
+                                  : formatTimeOfDay(
+                                      const TimeOfDay(hour: 0, minute: 0))
+                            };
+
+                            eventsProvider.addEvent(data);
+
+                            widget.onTap(1);
+                          } else {
+                            showCupertinoDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: SvgPicture.asset(
+                                    'assets/images/error.svg',
+                                    height: 150,
+                                  ),
+                                  content: const Text(
+                                    'Pour créer un événement il est nécessaire de lui donner un nom est une date',
+                                    textAlign: TextAlign.center,
+                                  ),
+                                  actions: [
+                                    CupertinoDialogAction(
+                                      child: Text('OK'),
+                                      onPressed: () {
+                                        // Close the dialog and navigate back
+                                        Navigator.of(context,
+                                                rootNavigator: true)
+                                            .pop("Discard");
+                                      },
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
                           }
-
-                          var data = {
-                            'id': timestamp,
-                            'type_event': 'customize',
-                            'title': nameEvent,
-                            'posterPath': _image != null ? savedImage.path : '',
-                            'overview': descriptionEvent,
-                            'releaseDate': DateFormat('yyyy-MM-dd HH:mm:ss').format(dateEvent),
-                            'releaseTime': timeEvent != null ? formatTimeOfDay(timeEvent) : ''
-                          };
-
-                          eventsProvider.addEvent(data);
-
-                          widget.onTap(1);
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width - 16,
-                        height: 50,
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            begin: Alignment(-1, -1),
-                            end: Alignment(1, 1),
-                            colors: [
-                              Color(0xFFF69F64),
-                              Color.fromRGBO(237, 105, 127, 0.98),
-                              Color(0xFFC963C7),
-                              Color(0xFFB25FF5),
-                              Color(0xFF5882DC),
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width - 16,
+                          height: 50,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              begin: Alignment(-1, -1),
+                              end: Alignment(1, 1),
+                              colors: [
+                                Color(0xFFF69F64),
+                                Color.fromRGBO(237, 105, 127, 0.98),
+                                Color(0xFFC963C7),
+                                Color(0xFFB25FF5),
+                                Color(0xFF5882DC),
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(13),
+                            border: Border.all(
+                                color: const Color.fromRGBO(33, 37, 42, 1)),
+                          ),
+                          child: const Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Créer mon événement',
+                                style: TextStyle(color: Colors.white),
+                              ),
                             ],
                           ),
-                          borderRadius: BorderRadius.circular(13),
-                          border: Border.all(
-                              color:
-                              const Color.fromRGBO(33, 37, 42, 1)),
-                        ),
-                        child: const Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Créer mon événement', style: TextStyle(color: Colors.white),),
-                          ],
-                        ),
-                      )
-                    ),
+                        )),
+                    const SizedBox(height: 100),
                   ],
                 ),
               ),
@@ -414,7 +455,7 @@ class _CreateEventViewState extends State<CreateEventView> {
           ),
         ),
       ]),
-      backgroundColor: Colors.black54,
+      backgroundColor: const Color(0xFF121212),
     );
   }
 }

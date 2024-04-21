@@ -29,76 +29,73 @@ class _StateListViewHorizontalBestMovies extends State<ListViewHorizontalBestMov
       future: futureMovies,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
-          return Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(top: 20, bottom: 40),
-                height: 240,
-                child: FutureBuilder<List<Movie>>(
-                  future: snapshot.data?.getBestMovies(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      List<Movie> movies = snapshot.data ?? [];
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: movies.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          var movie = movies[index];
-                          var posterPath = movie.getPosterPath();
+          return Container(
+            margin: const EdgeInsets.only(top: 20, bottom: 40,),
+            height: 240,
+            child: FutureBuilder<List<Movie>>(
+              future: snapshot.data?.getBestMovies(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  List<Movie> movies = snapshot.data ?? [];
+                  return ListView.builder(
+                    physics: const BouncingScrollPhysics(),
 
-                          // Customize your UI elements here based on the movie data
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 20.0),
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MovieView(movie: movie),
-                                  ),
-                                );
-                              },
-                              child: SizedBox(
-                                height: 200,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.center, // Align children to the start (left)
-                                  children: [
-                                    ClipRRect(
-                                        borderRadius: BorderRadius.circular(10.0), // Adjust the radius as needed
-                                        child: Image.network("https://image.tmdb.org/t/p/w200/$posterPath", height: 200)
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 10.0), // Add some top padding for separation
-                                      child: Text(
-                                        truncateText(movie.title,
-                                            20), // Limit to 20 characters
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: false,
-                                        style: const TextStyle(
-                                            color: Color(0xFFD9D9D9),
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: movies.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      var movie = movies[index];
+                      var posterPath = movie.getPosterPath();
+
+                      return Padding(
+                        padding: const EdgeInsets.only(left: 10.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MovieView(movie: movie),
                               ),
+                            );
+                          },
+                          child: SizedBox(
+                            height: 200,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ClipRRect(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Image.network("https://image.tmdb.org/t/p/w600_and_h900_bestv2/$posterPath", height: 200)
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 10.0),
+                                  child: Text(
+                                    truncateText(movie.title, 20), // Limit to 20 characters
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: false,
+                                    style: const TextStyle(
+                                        color: Color(0xFFD9D9D9),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          );
-                        },
+                          ),
+                        ),
                       );
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  },
-                ),
-              ),
-            ],
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
           );
         } else {
           return const Center(

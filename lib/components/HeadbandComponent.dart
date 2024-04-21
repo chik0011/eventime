@@ -1,75 +1,90 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
+import 'package:banner_carousel/banner_carousel.dart';
+import 'package:provider/provider.dart';
+import '../models/movie.dart';
+import 'package:eventime/screen/movieView.dart';
+import '../provider/moviesProvider.dart';
 
-class HeadBandComponent extends StatelessWidget {
-  HeadBandComponent({
-    super.key,
-  });
+class HeadBandComponent extends StatefulWidget {
+  const HeadBandComponent({Key? key}) : super(key: key);
 
-  DateTime dateNow = DateTime.now();
-  DateFormat dateFormatLong = DateFormat('dd.MM', 'fr');
-  DateFormat dateFormatShort = DateFormat('EEEE', 'fr');
+  @override
+  State<HeadBandComponent> createState() => _StateHeadBandComponent();
+}
+
+class _StateHeadBandComponent extends State<HeadBandComponent> {
+  late List<BannerModel> listBanners;
+  late List<Movie> movies = [];
+
+  @override
+  void initState() {
+    super.initState();
+    listBanners = [];
+    loadMovies();
+  }
+
+  void loadMovies() async {
+    final moviesProvider = Provider.of<MoviesProvider>(context, listen: false);
+
+    if (moviesProvider.futureMovies != null) {
+      try {
+        List<Movie> topMovies = await moviesProvider.getTopMovies();
+        setState(() {
+          for (var movie in topMovies) {
+            listBanners.add(
+              BannerModel(
+                imagePath: "https://www.themoviedb.org/t/p/w500_and_h282_face${movie.posterPath}",
+                id: movie.id.toString(),
+              ),
+            );
+            movies.add(movie);
+          }
+        });
+      } catch (e) {
+        print('Erreur lors du chargement des meilleurs films: $e');
+      }
+    }
+  }
+
+  void onBannerTap(String id) {
+    Movie? movieLink = movies.firstWhere(
+            (movie) => movie.id.toString() == id
+    );
+
+    if (movieLink != null) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MovieView(movie: movieLink),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 20, top: 20),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12.0),
-        gradient: const LinearGradient(
-          begin: Alignment(-1, -1),
-          end: Alignment(1, 1),
-          colors: [
-            Color(0xFFF69F64),
-            Color.fromRGBO(237, 105, 127, 0.98),
-            Color(0xFFC963C7),
-            Color(0xFFB25FF5),
-            Color(0xFF5882DC),
-          ],
-        ),
-      ),
-      width: MediaQuery.of(context).size.width,
-      height: 200,
-      child: Row (
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text("Bonjour !", style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Inter',
-                fontSize: 12.0,
-                fontWeight: FontWeight.w300,
-              )),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-              ),
-              Text(dateFormatLong.format(dateNow), style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'Inter',
-                fontSize: 36.0,
-                fontWeight: FontWeight.w500,
-              ),),
-              Text(dateFormatShort.format(dateNow), style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'Inter',
-                fontSize: 17.0,
-                fontStyle: FontStyle.normal,
-                fontWeight: FontWeight.w300, // Use FontWeight.w300 directly
-              )),
-            ],
+    if (listBanners.isNotEmpty) {
+      return SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: BannerCarousel.fullScreen(
+          banners: listBanners,
+          customizedIndicators: const IndicatorModel.animation(
+            width: 5,
+            height: 5,
+            spaceBetween: 4,
+            widthAnimation: 40,
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width - 160,
-            child:
-              SvgPicture.asset(
-                'assets/images/headband_Planet.svg',
-                height: 150,
-              ),
-          )
-        ],
-      ),
-    );
+          height: 270,
+          activeColor: const Color(0xFFD9D9D9),
+          disableColor: const Color(0xFFD9D9D9),
+          animation: true,
+          borderRadius: 7,
+          onTap: onBannerTap,
+          indicatorBottom: true,
+        ),
+      );
+    }
+
+    return Container();
   }
 }

@@ -1,11 +1,15 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:eventime/models/Genre/genre.dart';
 import 'package:eventime/models/Genre/genres.dart';
 import 'package:eventime/models/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:eventime/provider/eventsProvider.dart';
 import '../provider/genresProvider.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
+
 
 class MovieView extends StatefulWidget {
   final Movie movie;
@@ -19,7 +23,9 @@ class MovieView extends StatefulWidget {
 class _MovieViewState extends State<MovieView> {
 
   late List<String> genres;
+  String keyVideo = '';
   bool movieAdded = false;
+  late YoutubePlayerController controller;
 
   List<String> getCategMovie(List<Genre>? allGenresMovie) {
     final genreNames = widget.movie.genreIds
@@ -29,6 +35,14 @@ class _MovieViewState extends State<MovieView> {
         .toList();
 
     return genreNames;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<EventsProvider>(context, listen: false).loadEvents();
+    });
   }
 
   @override
@@ -43,10 +57,10 @@ class _MovieViewState extends State<MovieView> {
     Future<Genres> futureGenres = genresProvider.futureGenres;
 
     setState(() {
-      eventsProvider.loadEvents();
       movieAdded = eventsProvider.isIdContained(widget.movie.id);
-      eventsProvider.printEvents();
     });
+
+
 
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
@@ -65,6 +79,19 @@ class _MovieViewState extends State<MovieView> {
                 blendMode: BlendMode.dstIn,
                 child: Image.network(
                   "https://image.tmdb.org/t/p/w500/${widget.movie.getPosterPath()}",
+                  errorBuilder: (BuildContext context, Object exception, StackTrace? stackTrace) {
+                    return Container(
+                      height: 515,
+                      width: MediaQuery.of(context).size.width,
+                      color: const Color(0XFF303538),
+                      child: Center(
+                        child: SvgPicture.asset(
+                          'assets/images/picture.svg',
+                          height: 250,
+                        ),
+                      ),
+                    );
+                  },
                   width: MediaQuery.of(context).size.width,
                   fit: BoxFit.contain,
                 ),
@@ -98,7 +125,7 @@ class _MovieViewState extends State<MovieView> {
                 ),
               ),
               Positioned(
-                  top: 500,
+                  top: 505,
                   width: 320,
                   child: FutureBuilder<Genres>(
                     future: futureGenres,
@@ -114,20 +141,22 @@ class _MovieViewState extends State<MovieView> {
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
                                   decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(Radius.circular(5)),
+                                    borderRadius:
+                                    const BorderRadius.all(Radius.circular(4)),
                                     color: const Color(0xFF121212),
                                     border: Border.all(
                                       color: const Color(0xFF303030),
-                                      width: 1.1
-                                    )
+                                      width: 1.1,
+                                    ),
                                   ),
-                                  padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 1.5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 7.0, vertical: 1.5),
                                   margin: const EdgeInsets.only(left: 8),
                                   child: Text(
                                       categByMovie[index],
                                       style: const TextStyle(
-                                        color: Color(0xFFD9D9D9),
-                                        fontSize: 13
+                                        color: Color(0xFF777777),
+                                        fontSize: 12
                                       )
                                   )
                               );
@@ -138,35 +167,26 @@ class _MovieViewState extends State<MovieView> {
                   ),
               ),
               Positioned(
-                  top: 15,
-                  left: MediaQuery.of(context).size.width - 70,
-                  width:  MediaQuery.of(context).size.width,
-                  child: Row(
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          shape: const CircleBorder(),
-                          padding: const EdgeInsets.all(12),
-                          primary: Colors.transparent,
-                          onPrimary: Colors.black,
-                        ),
-                        child: const Icon(Icons.close, color: Colors.white),
-                      )
-                    ],
-                  )
+                top: 0,
+                left: 0,
+                right: 0,
+                child: AppBar(
+                  iconTheme: const IconThemeData(
+                      color: Color(0xFFD9D9D9)
+                  ),
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                ),
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 541.0, left: 8, right: 8),
+                padding: EdgeInsets.only(top: 550.0, left: 8, right: 8),
                 child: Divider(
                   color: Color(0xFF191919),
                   thickness: 2,
                 ),
               ),
               Positioned(
-                  top: 565,
+                  top: 575,
                   width:  MediaQuery.of(context).size.width,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -280,14 +300,14 @@ class _MovieViewState extends State<MovieView> {
                   )
               ),
               const Padding(
-                padding: EdgeInsets.only(top: 655.0, left: 8, right: 8),
+                padding: EdgeInsets.only(top: 663.0, left: 8, right: 8),
                 child: Divider(
                   color: Color(0xFF191919),
                   thickness: 2,
                 ),
               ),
               Container(
-                  margin: const EdgeInsets.only(top: 670),
+                  margin: const EdgeInsets.only(top: 680),
                   width: MediaQuery.of(context).size.width,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -304,7 +324,7 @@ class _MovieViewState extends State<MovieView> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 15.0),
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 17.0),
                         child: RichText(
                           textAlign: TextAlign.justify,
                           text: TextSpan(
@@ -316,8 +336,10 @@ class _MovieViewState extends State<MovieView> {
                           ),
                         ),
                       ),
+
+                      buildVideo(),
                       Padding(
-                        padding: const EdgeInsets.only(right: 10, left: 10, top: 35, bottom: 20),
+                        padding: const EdgeInsets.only(right: 10, left: 10, top: 35, bottom: 30),
                         child: Align(
                           alignment: Alignment.bottomCenter,
                           child: movieAdded
@@ -325,15 +347,10 @@ class _MovieViewState extends State<MovieView> {
                               onTap: () {
                                 // Remove element
                                 if(movieAdded) {
-                                  var indexMovie = eventsProvider.indexOfEventById(widget.movie.id);
-
-                                  if(indexMovie > 0) {
-                                    eventsProvider.removeEvent(indexMovie);
-
-                                    setState(() {
-                                      movieAdded = !movieAdded;
-                                    });
-                                  }
+                                  eventsProvider.removeEventById(widget.movie.id);
+                                  setState(() {
+                                    movieAdded = !movieAdded;
+                                  });
                                 }
                               },
                               child: Container(
@@ -409,7 +426,7 @@ class _MovieViewState extends State<MovieView> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('Ajouter un événement', style: TextStyle(color: Colors.white),),
+                                    Text('Ajouter aux événements', style: TextStyle(color: Colors.white),),
                                   ],
                                 ),
                               )
@@ -425,4 +442,49 @@ class _MovieViewState extends State<MovieView> {
       )
     );
   }
+
+
+  Widget buildVideo() {
+    return FutureBuilder(
+      future: widget.movie.getVideo(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+
+        if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+          YoutubePlayerController _controller = YoutubePlayerController(
+            initialVideoId: snapshot.data ?? '', // ID of a sample video from YouTube.// ID of a sample video from YouTube.
+            flags: const YoutubePlayerFlags(
+              autoPlay: false,
+              mute: false,
+              disableDragSeek: true,
+              loop: false,
+              enableCaption: false,
+            ),
+          );
+          return Padding(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 17.0),
+            child: YoutubePlayer(
+              controller: _controller,
+              showVideoProgressIndicator: true,
+              bottomActions: <Widget>[
+                const SizedBox(width: 14.0),
+                CurrentPosition(),
+                const SizedBox(width: 8.0),
+                ProgressBar(isExpanded: true),
+                RemainingDuration(),
+              ],
+              aspectRatio: 4 / 3,
+              progressIndicatorColor: Colors.white,
+              onReady: () {
+                print('Player is ready.');
+              },
+            ),
+          );
+        } else {
+          // Returns an empty container until the data is loaded
+          return Container();
+        }
+      },
+    );
+  }
+
 }

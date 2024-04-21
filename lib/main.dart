@@ -1,8 +1,11 @@
+import 'dart:ui';
+
 import 'package:eventime/provider/genresProvider.dart';
 import 'package:eventime/provider/moviesProvider.dart';
 import 'package:eventime/provider/eventsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:eventime/screen/homeView.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:eventime/screen/createEventView.dart';
@@ -12,6 +15,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
+  SystemChrome.setPreferredOrientations(
+    [
+      DeviceOrientation.portraitUp,
+    ]
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -25,6 +33,7 @@ class InitApp extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => EventsProvider()),
@@ -33,7 +42,7 @@ class InitApp extends State<MyApp> {
       ],
       child: MaterialApp(
         title: 'Eventime',
-        home: ManageApp(),
+        home: const ManageApp(),
         debugShowCheckedModeBanner: false,
         theme: ThemeData(),
         localizationsDelegates: const [
@@ -82,53 +91,72 @@ class ManageAppState extends State<ManageApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex],
-      backgroundColor: _currentIndex == 3 ? Colors.black : Colors.transparent, // Set black color when _currentIndex is not 3
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          gradient: _currentIndex == 3 ? null : const LinearGradient(
-            colors: [Color(0xFF202020), Color(0xFF202020)],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.transparent,
+      body: Stack(
+        children: [
+          _screens[_currentIndex],
+
+          Positioned(
+            bottom: 5,
+            left: 10,
+            right: 10,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(30),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 50.0, sigmaY: 50.0),
+                child: Container(
+                  height: 75,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
           ),
-          borderRadius: BorderRadius.circular(15),
-        ),
 
-        child: SalomonBottomBar(
-          onTap: (i) => setState(() {
-            _currentIndex = i;
-          }),
-          currentIndex: _currentIndex,
-          items: [
-            /// Home
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.home, color: Colors.grey,),
-              title: const Text("Accueil"),
-              selectedColor: Colors.white,
-            ),
+          Positioned(
+              bottom: 12,
+              left: 10,
+              right: 10,
+              child: SalomonBottomBar(
+                onTap: (i) => setState(() {
+                  _currentIndex = i;
+                }),
+                currentIndex: _currentIndex,
+                items: [
+                  /// Home
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.home, color: Colors.white,),
+                    title: const Text("Accueil"),
+                    selectedColor: Colors.white,
+                  ),
 
-            /// Likes
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.favorite_border, color: Colors.grey,),
-              title: const Text("Favorie"),
-              selectedColor: Colors.white,
-            ),
+                  /// Likes
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.favorite_border, color: Colors.white,),
+                    title: const Text("Favorie"),
+                    selectedColor: Colors.white,
+                  ),
 
-            /// Search
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.search, color: Colors.grey,),
-              title: const Text("Découvrir"),
-              selectedColor: Colors.white,
-            ),
+                  /// Search
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.search, color: Colors.white,),
+                    title: const Text("Découvrir"),
+                    selectedColor: Colors.white,
+                  ),
 
-            /// New
-            SalomonBottomBarItem(
-              icon: const Icon(Icons.add, color: Colors.grey,),
-              title: const Text("Nouveau"),
-              selectedColor: Colors.white,
-            )
-          ],
-        ),
+                  /// New
+                  SalomonBottomBarItem(
+                    icon: const Icon(Icons.add, color: Colors.white,),
+                    title: const Text("Nouveau"),
+                    selectedColor: Colors.white,
+                  )
+                ],
+              ),
+          )
+        ],
       ),
     );
   }

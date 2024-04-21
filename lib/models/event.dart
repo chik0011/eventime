@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Event {
   final int id;
@@ -20,6 +21,13 @@ class Event {
     required this.releaseDate,
     required this.releaseTime,
   });
+
+  String formatReleaseDate() {
+    DateTime dateTime = DateTime.parse(releaseDate.toString());
+    final dateFormat = DateFormat('MMM', 'fr');
+
+    return "${dateTime.day} ${dateFormat.format(dateTime)} ${dateTime.year}";
+  }
 
   factory Event.fromJson(Map<String, dynamic> json) {
     String releaseTimeStr = json['releaseTime'] ?? '00:00';

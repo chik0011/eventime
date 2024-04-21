@@ -1,4 +1,6 @@
+import 'package:flutter/animation.dart';
 import 'package:intl/intl.dart';
+import 'package:eventime/api/videos.dart';
 
 class Movie {
   final int id;
@@ -78,10 +80,22 @@ class Movie {
   }
 
   String getVoteAverage() {
-    return voteAverage.toStringAsFixed(1) ?? 'N/A';
+    return voteAverage.toStringAsFixed(1);
   }
 
   String getVoteCount() {
-    return voteCount.toStringAsFixed(0) ?? 'N/A';
+    return voteCount.toStringAsFixed(0);
+  }
+
+  Future<String> getVideo() async {
+    var videos = await fetchVideos(id);
+    for (var video in videos.videos) {
+      print(video.name);
+      if (video.site == "YouTube") {
+        return video.key;
+      }
+    }
+
+    return '';
   }
 }

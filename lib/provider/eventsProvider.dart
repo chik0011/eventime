@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
@@ -7,13 +8,72 @@ class EventsProvider extends ChangeNotifier {
 
   late SharedPreferences _prefs;
   List<String> events = [];
+  int typeDisplay = 0;
 
   EventsProvider() {
     loadEvents();
   }
 
+  Future<int> getTypeDisplay() async {
+
+    String? searchTypeDisplay = _prefs.getString("type_display");
+
+    if (searchTypeDisplay == null) {
+      await _prefs.setString("type_display", '0');
+
+      return 0;
+    } else {
+      typeDisplay = int.parse(searchTypeDisplay);
+    }
+
+    return typeDisplay;
+  }
+
+  void toggleTypeDisplay() async {
+    int newValue = typeDisplay == 1 ? 0 : 1;
+
+    await _prefs.setString("type_display", newValue.toString());
+    typeDisplay = newValue;
+
+    notifyListeners();
+  }
+
+  // Load events from SharedPreferences
+  Future<void> loadEvents() async {
+    _prefs = await SharedPreferences.getInstance();
+
+    Set<String> allKeys = _prefs.getKeys();
+
+    // Assuming you store an integer under 'type_display' key
+    String? searchTypeDisplay = _prefs.getString("type_display");
+
+    if (searchTypeDisplay == null) {
+      await _prefs.setString("type_display", '0');
+    } else {
+      typeDisplay = int.parse(searchTypeDisplay);
+    }
+
+    // Filter keys begin by "event"
+    Set<String> eventKeys = allKeys.where((key) => key.startsWith('event')).toSet();
+
+    List<int> uniqueEventIds = [];
+
+    for (var eventKey in eventKeys) {
+      var value = _prefs.getString(eventKey) ?? "";
+
+      var decodedEvent = json.decode(value);
+      var eventId = decodedEvent['id'];
+
+      if (!uniqueEventIds.contains(eventId) && !isIdContained(eventId)) {
+        uniqueEventIds.add(eventId);
+        if (value.isNotEmpty) {
+          events.add(value);
+        }
+      }
+    }
+  }
+
   Event? fetch(int idEvent) {
-    // Utilisez la méthode synchrone loadEvents
     loadEvents();
 
     for (var eventString in events) {
@@ -33,84 +93,27 @@ class EventsProvider extends ChangeNotifier {
       }
     }
 
-    return null; // Retourne null si l'événement avec l'ID spécifié n'est pas trouvé
+    return null;
   }
 
-  Future<void> printAllSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    Map<String, dynamic> allPrefs = prefs.getKeys().fold({}, (Map<String, dynamic> acc, String key) {
-      acc[key] = prefs.get(key);
-      return acc;
-    });
-
-    print('All SharedPreferences:');
-    allPrefs.forEach((key, value) {
-      print('$key: $value');
-    });
-  }
-
-  getPreviewEvents() {
-    if (events.isEmpty) {
-      // Load events asynchronously and wait for completion
-      loadEvents().then((_) {
-        // Parse JSON strings into Event objects
-        List<Event> eventObjects = events.map((eventString) {
-          try {
-            return Event.fromJson(json.decode(eventString));
-          } catch (e) {
-            print('Error decoding event: $e');
-            return null;
-          }
-        }).whereType<Event>().toList();
-
-        // Sort the events by releaseDate in descending order
-        eventObjects.sort((a, b) {
-          return b.releaseDate.compareTo(a.releaseDate);
-        });
-
-        // Return the sorted events
-        return eventObjects;
-      });
-    } else {
-      // If events are already loaded, parse, sort, and return them immediately
-      List<Event> eventObjects = events.map((eventString) {
-        try {
-          return Event.fromJson(json.decode(eventString));
-        } catch (e) {
-          print('Error decoding event: $e');
-          return null;
-        }
-      }).whereType<Event>().toList();
-
-      // Sort the events by releaseDate in descending order
-      eventObjects.sort((a, b) {
-        return b.releaseDate.compareTo(a.releaseDate);
-      });
-
-      // Return the sorted events
-      return eventObjects;
-    }
-  }
-
-  // Load events from SharedPreferences
-  Future<void> loadEvents() async {
-    _prefs = await SharedPreferences.getInstance();
-    var i = 1;
-
-    do {
-      var eventKey = "event$i";
-      var value = _prefs.getString(eventKey) ?? "";
-
-      if (value.isNotEmpty) {
-        // Check if the event is not already in the list
-        if (!events.any((event) => event == value)) {
-          events.add(value);
-        }
+  List<Event> getPreviewEvents() {
+    // If events are already loaded, parse and sort them immediately
+    List<Event> eventObjects = events.map((eventString) {
+      try {
+        return Event.fromJson(json.decode(eventString));
+      } catch (e) {
+        print('Error decoding event: $e');
+        return null;
       }
+    }).whereType<Event>().toList();
 
-      i++;
-    } while (_prefs.containsKey("event$i"));
+    // Sort the events by releaseDate in ascending order
+    eventObjects.sort((a, b) {
+      return a.releaseDate.compareTo(b.releaseDate);
+    });
+
+    // Return the sorted events
+    return eventObjects;
   }
 
   // Add an event to SharedPreferences and the events list
@@ -119,75 +122,75 @@ class EventsProvider extends ChangeNotifier {
     Map<String, dynamic> decodedEvent = json.decode(jsonString);
 
     var typeEvent = decodedEvent['type_event'];
+    var eventId = decodedEvent['id'];
 
-    if(typeEvent == "movie") {
-      var eventId = decodedEvent['id'];
+    if (typeEvent == "movie") {
+      // Check if the event ID is already registered
+      bool isRegistered = await isIdRegister(eventId);
+      bool isContained = isIdContained(eventId);
 
-      // Check if eventData is already in the events list
-      if (!events.any((event) => json.decode(event) == json.decode(jsonString)) && isIdContained(eventId) == false) {
-        var eventKey = "event${events.length + 1}";
+      // Add new event if it's not already registered
+      if (!isRegistered && !isContained) {
+        var eventKey = "event_$eventId";
 
         // Save to SharedPreferences
         await _prefs.setString(eventKey, jsonString);
         // Update the events list
         events.add(jsonString);
         notifyListeners();
-      } else {
-        print('Event already exists in the list');
       }
-    } else if(typeEvent == "customize") {
-      var eventKey = "event${events.length + 1}";
+    } else if (typeEvent == "customize") {
+      var eventKey = "event_$eventId";
 
       // Save to SharedPreferences
       await _prefs.setString(eventKey, jsonString);
       // Update the events list
       events.add(jsonString);
       notifyListeners();
-
-      printEvents();
     }
   }
 
-  // Remove an event from SharedPreferences and the events list
-  Future<void> removeEvent(int index) async {
-    if (events.isNotEmpty && index >= 0 && index <= events.length) {
-      var eventKey = "event$index";
-      await _prefs.remove(eventKey);
+  Future<void> updateEvent(int eventId, Object updatedEventData) async {
+    loadEvents();
 
-      index--;
-      events.removeAt(index);
-      notifyListeners();
-    } else {
-      print('Invalid index: $index or empty list');
-    }
-  }
-
-  // Print events
-  // void printEvents() {
-  //   for (var i = 0; i < events.length; i++) {
-  //     print("Event ${i + 1}: ${inspect(events[i])}");
-  //   }
-  // }
-
-  void printEvents() {
-    for (var i = 0; i < events.length; i++) {
+    int index = events.indexWhere((event) {
       try {
-        var decodedEvent = json.decode(events[i]);
-        var title = decodedEvent['title'];
-        var id = decodedEvent['id'];
-        print("Event ${i + 1} - Title: $title, ID: $id");
+        var decodedEvent = json.decode(event);
+        var currentEventId = decodedEvent['id'];
+
+        if (currentEventId is String) {
+          return int.tryParse(currentEventId) == eventId;
+        } else if (currentEventId is int) {
+          return currentEventId == eventId;
+        }
+        return false;
       } catch (e) {
-        print("Event ${i + 1}: Error decoding JSON");
+        return false;
       }
+    });
+
+    if (index != -1) {
+      var eventKey = "event_$eventId";
+      var updatedEventJsonString = json.encode(updatedEventData);
+
+      // Update in SharedPreferences
+      await _prefs.setString(eventKey, updatedEventJsonString);
+
+      // Update list in events
+      events[index] = updatedEventJsonString;
+
+      notifyListeners();
     }
   }
 
-  // Test if an id is contained in the events list
-  bool isIdContained(int id) {
-    return events.any((event) {
+  // Remove an event from SharedPreferences and the events list by ID
+  Future<void> removeEventById(int id) async {
+    // Find the index of the event with the specified ID
+    int index = events.indexWhere((event) {
       try {
         var decodedEvent = json.decode(event);
         var eventId = decodedEvent['id'];
+
         if (eventId is String) {
           return int.tryParse(eventId) == id;
         } else if (eventId is int) {
@@ -199,6 +202,60 @@ class EventsProvider extends ChangeNotifier {
         return false;
       }
     });
+
+    if (index != -1) {
+      // If the event with the specified ID is found, remove it
+      var eventKey = "event_$id";
+      await _prefs.remove(eventKey);
+
+      // Remove the event from the events list
+      events.removeAt(index);
+      notifyListeners();
+    }
+  }
+
+  void printAllSharedPreferencesKeys() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    Set<String> keys = prefs.getKeys();
+    for (String key in keys) {
+      print(key);
+    }
+  }
+
+  // Test if an id is contained in the events list
+  bool isIdContained(int id) {
+    var find = false;
+    for (var event in events) {
+      var decodedEvent = json.decode(event);
+      var eventId = decodedEvent['id'];
+
+      if (eventId is String) {
+        if (int.tryParse(eventId) == id) {
+          // Match found
+          find = true;
+        }
+      } else if (eventId is int) {
+        if (eventId == id) {
+          // Match found
+          find =  true;
+        }
+      }
+    }
+
+    return find;
+  }
+
+  Future<bool> isIdRegister(int id) async {
+    _prefs = await SharedPreferences.getInstance();
+    Set<String> keys = _prefs.getKeys();
+
+    for (var key in keys) {
+      if(key == "event_$id") {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   // Get the index of the event with a specific id
@@ -219,5 +276,21 @@ class EventsProvider extends ChangeNotifier {
       }
     }
     return -1; // Return -1 if the id is not found
+  }
+
+
+  Future<void> deleteImage(String imagePath) async {
+    try {
+      final file = File(imagePath);
+
+      if (await file.exists()) {
+        // await file.delete();
+        print("Image supprimée avec succès.");
+      } else {
+        print("Le fichier n'existe pas.");
+      }
+    } catch (e) {
+      print("Une erreur s'est produite lors de la suppression de l'image: $e");
+    }
   }
 }
