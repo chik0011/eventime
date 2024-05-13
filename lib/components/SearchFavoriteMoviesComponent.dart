@@ -24,13 +24,13 @@ class _SearchFavoriteMoviesComponentState extends State<SearchFavoriteMoviesComp
         children: [
           SearchBar(
             hintStyle: MaterialStateProperty.all(const TextStyle(
-              color: Color(0xFF3F3F3F),
+              color: Color(0xFFB5B5B5),
             )),
             textStyle: MaterialStateProperty.all(const TextStyle(
-              color: Color(0xFF3F3F3F ),
+              color: Color(0xFF353535),
             )),
             backgroundColor: MaterialStateProperty.all(
-              Colors.black38,
+                const Color(0xFF232323)
             ),
             onSubmitted: (String value) {
               moviesProvider.queryFilter = value;
@@ -38,10 +38,10 @@ class _SearchFavoriteMoviesComponentState extends State<SearchFavoriteMoviesComp
             },
             hintText: 'Rechercher un film',
             controller: textEditingController,
-            leading: const Icon(Icons.search, color: Color(0xFF3F3F3F)),
+            leading: const Icon(Icons.search, color: Color(0xFF353535)),
             trailing: [
               IconButton(
-                icon: const Icon(Icons.close, color: Color(0xFF3F3F3F)),
+                icon: const Icon(Icons.close, color: Color(0xFF353535)),
                 onPressed: () {
                   moviesProvider.removeFilters();
                   textEditingController.clear();

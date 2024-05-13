@@ -25,7 +25,6 @@ class _EventViewState extends State<EventView> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Appeler loadEvents après le premier rendu de l'écran
       Provider.of<EventsProvider>(context, listen: false).loadEvents();
     });
   }
@@ -40,7 +39,6 @@ class _EventViewState extends State<EventView> {
     final EventsProvider eventsProvider = Provider.of<EventsProvider>(context);
     Event? event = eventsProvider.fetch(widget.idEvent);
 
-    print(widget.idEvent);
     if (event != null) {
       targetDate = DateTime(
         event.releaseDate.year,
@@ -59,7 +57,7 @@ class _EventViewState extends State<EventView> {
           body: ListView(children: [
             Stack(
               children: <Widget>[
-                if (event != null) buildEventWidget(event),
+                buildEventWidget(event),
                 Positioned(
                   top: 0,
                   left: 0,
@@ -132,7 +130,7 @@ class _EventViewState extends State<EventView> {
                   ),
                 ),
                 Positioned(
-                  top: 430,
+                  top: 440,
                   child: Padding(
                     padding: const EdgeInsets.only(
                       left: 10.0,
@@ -142,14 +140,14 @@ class _EventViewState extends State<EventView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          event!.title,
+                          event.title,
                           style: const TextStyle(
                               color: Color(0xFFD9D9D9),
                               fontSize: 21,
                               fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(
-                          height: 4,
+                          height: 6,
                         ),
                         Text(
                           event.formatReleaseDate().toString(),
@@ -163,7 +161,7 @@ class _EventViewState extends State<EventView> {
                     ),
                   ),
                 ),
-                categoriesEvent(event!),
+                genresEvent(event),
                 Padding(
                     padding: const EdgeInsets.only(top: 560.0, left: 8, right: 8),
                     child: CountdownTimerComponent(targetDate: targetDate)
@@ -193,6 +191,7 @@ class _EventViewState extends State<EventView> {
                               style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 13,
+                                height: 1.5
                               ),
                               text: event.overview.isNotEmpty ? event.overview : "Aucune",
                             ),
@@ -218,14 +217,13 @@ class _EventViewState extends State<EventView> {
                                     height: 50,
                                     decoration: BoxDecoration(
                                       gradient: const LinearGradient(
-                                        begin: Alignment(-1, -1),
-                                        end: Alignment(1, 1),
+                                        begin: Alignment(-1, -1.5),
+                                        end: Alignment(1.15, 3),
                                         colors: [
-                                          Color(0xFFF69F64),
-                                          Color.fromRGBO(237, 105, 127, 0.98),
-                                          Color(0xFFC963C7),
-                                          Color(0xFFB25FF5),
-                                          Color(0xFF5882DC),
+                                          Color(0xFFFF6321),
+                                          Color(0xFFD63341),
+                                          Color(0xFF8E3F80),
+                                          Color(0xFF007789),
                                         ],
                                       ),
                                       borderRadius: BorderRadius.circular(13),
@@ -305,7 +303,7 @@ class _EventViewState extends State<EventView> {
           child: Container(
             height: 515,
             width: MediaQuery.of(context).size.width,
-            color: const Color(0XFF303538),
+            color: const Color(0XFF232323),
             child: Center(
               child: SvgPicture.asset(
                 'assets/images/picture.svg',
@@ -320,7 +318,7 @@ class _EventViewState extends State<EventView> {
     return Container();
   }
 
-  Widget categoriesEvent(Event event) {
+  Widget genresEvent(Event event) {
     if(event.genres.isNotEmpty) {
       return Positioned(
         top: 505,
@@ -342,8 +340,8 @@ class _EventViewState extends State<EventView> {
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 7.0, vertical: 1.5),
-                margin: const EdgeInsets.only(left: 8),
+                    horizontal: 8.0, vertical: 3),
+                margin: const EdgeInsets.only(left: 8, top: 2),
                 child: Text(
                   event.genres[index], // Use 'Unknown Genre' if the value is null
                   style: const TextStyle(
@@ -361,9 +359,9 @@ class _EventViewState extends State<EventView> {
     return
       Positioned(
           top: 505,
-          width: 102,
+          width: 94,
           child: SizedBox(
-              height: 25,
+              height: 23,
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius:
@@ -375,7 +373,7 @@ class _EventViewState extends State<EventView> {
                   ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 7.0, vertical: 1.5),
+                    horizontal: 7.0, vertical: 2.8),
                 margin: const EdgeInsets.only(left: 8),
                 child: const Text(
                   "Personnalisé",

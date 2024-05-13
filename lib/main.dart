@@ -44,7 +44,7 @@ class InitApp extends State<MyApp> {
         title: 'Eventime',
         home: const ManageApp(),
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(),
+        theme: ThemeData(useMaterial3: false,),
         localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,

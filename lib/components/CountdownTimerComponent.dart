@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/index.dart';
 
 class CountdownTimerComponent extends StatefulWidget {
-
   final DateTime targetDate;
 
   CountdownTimerComponent({super.key, required this.targetDate});
@@ -15,10 +14,8 @@ class CountdownTimerComponent extends StatefulWidget {
 
 class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
   late CountdownTimerController controller;
-
   late int latestYear;
   late int latestEventTime;
-
   bool isControllerDisposed = false;
 
   @override
@@ -27,6 +24,9 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
 
     int latestYearMilliseconds = calculateYearsRemaining(widget.targetDate.millisecondsSinceEpoch);
     latestEventTime = widget.targetDate.millisecondsSinceEpoch - latestYearMilliseconds;
+
+    if(latestYearMilliseconds < 0)
+      latestEventTime = 0;
 
     controller = CountdownTimerController(endTime: latestEventTime, onEnd: onEnd);
   }
@@ -67,17 +67,78 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
       controller: controller,
       widgetBuilder: (BuildContext context, CurrentRemainingTime? time) {
         if (time == null) {
-          return const Text('Terminé', style: TextStyle(color: Colors.white),);
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text("0", style: styleTime),
+                  const SizedBox(height: 15),
+                  Text("JOURS".toString(), style: styleSpan),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+                child: VerticalDivider(
+                  color: Color(0xFF191919),
+                  thickness: 1,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text("0", style: styleTime),
+                  const SizedBox(height: 15),
+                  Text("HEURES".toString(), style: styleSpan),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+                child: VerticalDivider(
+                  color: Color(0xFF191919),
+                  thickness: 1,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text("0", style: styleTime),
+                  const SizedBox(height: 15),
+                  Text("MINUTES".toString(), style: styleSpan),
+                ],
+              ),
+              SizedBox(
+                height: 40,
+                child: VerticalDivider(
+                  color: Color(0xFF191919),
+                  thickness: 1,
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text("0", style: styleTime),
+                  const SizedBox(height: 15),
+                  Text("SECONDES".toString(), style: styleSpan),
+                ],
+              ),
+            ],
+          );
         }
         List<Widget> list = [];
 
         if (latestYear > 0) {
-          list.add(Column(
+          list.add( Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(latestYear.toString(), style: styleTime),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               Text("ANS".toString(), style: styleSpan),
             ],
           ));
@@ -99,7 +160,7 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(time.days.toString(), style: styleTime),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               Text("JOURS".toString(), style: styleSpan),
             ],
           ));
@@ -121,7 +182,7 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(time.hours.toString(), style: styleTime),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               Text("HEURES".toString(), style: styleSpan),
             ],
           ));
@@ -143,7 +204,7 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(time.min.toString(), style: styleTime),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               Text("MINUTES".toString(), style: styleSpan),
             ],
           ));
@@ -165,7 +226,7 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Text(time.sec.toString(), style: styleTime),
-              const SizedBox(height: 5),
+              const SizedBox(height: 15),
               Text("SECONDES".toString(), style: styleSpan),
             ],
           ));
@@ -182,12 +243,9 @@ class _CountdownTimerComponentState extends State<CountdownTimerComponent> {
   int calculateYearsRemaining(int milliseconds) {
     DateTime targetDate = DateTime.fromMillisecondsSinceEpoch(milliseconds);
     Duration oneYear = const Duration(days: 365);
-
     DateTime now = DateTime.now();
     Duration difference = targetDate.difference(now);
-
     double averageDaysPerYear = 365;
-
     int yearsRemaining = (difference.inDays / averageDaysPerYear).floor();
 
     latestYear = yearsRemaining;

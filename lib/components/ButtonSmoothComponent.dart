@@ -25,7 +25,7 @@ class ButtonSmoothComponent extends StatelessWidget {
           height: height,
           width: width,
           decoration: BoxDecoration(
-            color: const Color(0xFF21252A),
+            color: const Color(0xFF232323),
             borderRadius: BorderRadius.circular(37),
             border: Border.all(
               color: const Color.fromRGBO(33, 37, 42, 1)
@@ -41,7 +41,7 @@ class ButtonSmoothComponent extends StatelessWidget {
                 width: 38,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(37),
-                    color: const Color(0xFF21252A),
+                    color: const Color(0xFF232323),
                     boxShadow: const [
                       BoxShadow(offset: Offset(2, 2), color: Color.fromRGBO(166, 166, 166, 0.2), blurRadius: 10),
                       BoxShadow(offset: Offset(-2, -2), color: Color.fromRGBO(5, 5, 5, 0.5), blurRadius: 10)

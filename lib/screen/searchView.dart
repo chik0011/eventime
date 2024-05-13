@@ -122,7 +122,7 @@ class _SearchViewState extends State<SearchView> {
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace? stackTrace) {
                 return Container(
-                  color: const Color(0XFF303538),
+                  color: const Color(0XFF232323),
                   child: Center(
                     child: SvgPicture.asset(
                       'assets/images/picture.svg',
@@ -160,7 +160,7 @@ class _SearchViewState extends State<SearchView> {
               errorBuilder: (BuildContext context, Object exception,
                   StackTrace? stackTrace) {
                 return Container(
-                  color: const Color(0XFF303538),
+                  color: const Color(0XFF232323),
                   child: Center(
                     child: SvgPicture.asset(
                       'assets/images/picture.svg',
@@ -188,7 +188,7 @@ class _SearchViewState extends State<SearchView> {
               width: 150,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF15171A),
+                  backgroundColor: const Color(0xFF232323),
                 ),
                 onPressed: () {
                   moviesProvider.increaseLimit(1);

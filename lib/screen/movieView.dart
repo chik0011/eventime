@@ -27,10 +27,10 @@ class _MovieViewState extends State<MovieView> {
   bool movieAdded = false;
   late YoutubePlayerController controller;
 
-  List<String> getCategMovie(List<Genre>? allGenresMovie) {
+  List<String> getGenreMovie(List<Genre>? allGenresMovie) {
     final genreNames = widget.movie.genreIds
-        .where((mv) => allGenresMovie?.any((categMovie) => categMovie.id == mv) ?? false)
-        .map((mv) => allGenresMovie!.firstWhere((categMovie) => categMovie.id == mv).name)
+        .where((mv) => allGenresMovie?.any((genreMovie) => genreMovie.id == mv) ?? false)
+        .map((mv) => allGenresMovie!.firstWhere((genreMovie) => genreMovie.id == mv).name)
         .take(3) // Limit the result to a maximum of 3 elements
         .toList();
 
@@ -60,8 +60,6 @@ class _MovieViewState extends State<MovieView> {
       movieAdded = eventsProvider.isIdContained(widget.movie.id);
     });
 
-
-
     return Scaffold(
       backgroundColor: const Color(0xFF121212),
       body: ListView(
@@ -83,7 +81,7 @@ class _MovieViewState extends State<MovieView> {
                     return Container(
                       height: 515,
                       width: MediaQuery.of(context).size.width,
-                      color: const Color(0XFF303538),
+                      color: const Color(0XFF232323),
                       child: Center(
                         child: SvgPicture.asset(
                           'assets/images/picture.svg',
@@ -97,7 +95,7 @@ class _MovieViewState extends State<MovieView> {
                 ),
               ),
               Positioned(
-                top: 460,
+                top: 465,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10.0,),
                   child: Row(
@@ -130,14 +128,14 @@ class _MovieViewState extends State<MovieView> {
                   child: FutureBuilder<Genres>(
                     future: futureGenres,
                     builder: (context, snapshot) {
-                      List<String> categByMovie = getCategMovie(snapshot.data?.genres);
-                      genres = categByMovie;
+                      List<String> genreByMovie = getGenreMovie(snapshot.data?.genres);
+                      genres = genreByMovie;
 
                       return SizedBox(
                         height: 25,
                         child: ListView.builder(
                             scrollDirection: Axis.horizontal,
-                            itemCount: categByMovie.length,
+                            itemCount: genreByMovie.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Container(
                                   decoration: BoxDecoration(
@@ -151,9 +149,9 @@ class _MovieViewState extends State<MovieView> {
                                   ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 7.0, vertical: 1.5),
-                                  margin: const EdgeInsets.only(left: 8),
+                                  margin: const EdgeInsets.only(left: 8, top: 3),
                                   child: Text(
-                                      categByMovie[index],
+                                      genreByMovie[index],
                                       style: const TextStyle(
                                         color: Color(0xFF777777),
                                         fontSize: 12
@@ -212,7 +210,7 @@ class _MovieViewState extends State<MovieView> {
                               ),
                             ),
                             const SizedBox(
-                              height: 3,
+                              height: 8,
                             ),
                             const Text(
                               "Date sortie",
@@ -250,7 +248,7 @@ class _MovieViewState extends State<MovieView> {
                             ),
                           ),
                           const SizedBox(
-                            height: 3,
+                            height: 8,
                           ),
                           const Text(
                             "Note",
@@ -284,7 +282,7 @@ class _MovieViewState extends State<MovieView> {
                               ),
                             ),
                             const SizedBox(
-                              height: 3,
+                              height: 8,
                             ),
                             const Text(
                               "Nombre de vote",
@@ -331,6 +329,7 @@ class _MovieViewState extends State<MovieView> {
                             style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 13,
+                              height: 1.5
                             ),
                             text: widget.movie.overview,
                           ),
@@ -361,11 +360,10 @@ class _MovieViewState extends State<MovieView> {
                                     begin: Alignment(-1, -1),
                                     end: Alignment(1, 1),
                                     colors: [
-                                      Color(0xFFF69F64),
-                                      Color.fromRGBO(237, 105, 127, 0.98),
-                                      Color(0xFFC963C7),
-                                      Color(0xFFB25FF5),
-                                      Color(0xFF5882DC),
+                                      Color(0xFFFF6321),
+                                      Color(0xFFD63341),
+                                      Color(0xFF8E3F80),
+                                      Color(0xFF007789),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(13),
@@ -410,11 +408,10 @@ class _MovieViewState extends State<MovieView> {
                                     begin: Alignment(-1, -1),
                                     end: Alignment(1, 1),
                                     colors: [
-                                      Color(0xFFF69F64),
-                                      Color.fromRGBO(237, 105, 127, 0.98),
-                                      Color(0xFFC963C7),
-                                      Color(0xFFB25FF5),
-                                      Color(0xFF5882DC),
+                                      Color(0xFFFF6321),
+                                      Color(0xFFD63341),
+                                      Color(0xFF8E3F80),
+                                      Color(0xFF007789),
                                     ],
                                   ),
                                   borderRadius: BorderRadius.circular(13),

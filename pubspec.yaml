@@ -45,13 +45,24 @@ dependencies:
   flutter_svg: ^2.0.9
   path_provider: ^2.1.1
   flutter_countdown_timer: ^4.1.0
-  banner_carousel: ^1.2.1
   shimmer: ^3.0.0
   youtube_player_flutter: ^9.0.1
+  carousel_slider: ^4.2.1
+  envied: ^0.5.4+1
+  envied_generator: ^0.5.4+1
+  envify: ^2.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
+  build_runner: ^2.4.9
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/loadLogo.jpg"
+
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -77,6 +88,7 @@ flutter:
     - assets/images/error.svg
     - assets/images/logo.png
     - assets/images/logo_extend.png
+    - assets/images/loadLogo.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

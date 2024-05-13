@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:eventime/models/event.dart';
@@ -203,14 +204,37 @@ class EventsProvider extends ChangeNotifier {
       }
     });
 
-    if (index != -1) {
-      // If the event with the specified ID is found, remove it
-      var eventKey = "event_$id";
-      await _prefs.remove(eventKey);
+    try {
+      await deleteEventImage(id);
 
-      // Remove the event from the events list
-      events.removeAt(index);
-      notifyListeners();
+      if (index != -1) {
+        // If the event with the specified ID is found, remove it
+        var eventKey = "event_$id";
+        await _prefs.remove(eventKey);
+
+        // Remove the event from the events list
+        events.removeAt(index);
+        notifyListeners();
+      }
+    } catch (e) {
+      print("Erreur lors de la suppression de l'événement : $e");
+    }
+  }
+
+  Future<void> deleteEventImage(int id) async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final imagePath = "${appDir.path}/event_image_$id.jpg";
+
+      final file = File(imagePath);
+      if (await file.exists()) {
+        await file.delete();
+        print("Image of id event  $id is delete.");
+      } else {
+        print("Image id $id  doesn't exist");
+      }
+    } catch (e) {
+      print("Error delete id image: $e");
     }
   }
 
@@ -276,21 +300,5 @@ class EventsProvider extends ChangeNotifier {
       }
     }
     return -1; // Return -1 if the id is not found
-  }
-
-
-  Future<void> deleteImage(String imagePath) async {
-    try {
-      final file = File(imagePath);
-
-      if (await file.exists()) {
-        // await file.delete();
-        print("Image supprimée avec succès.");
-      } else {
-        print("Le fichier n'existe pas.");
-      }
-    } catch (e) {
-      print("Une erreur s'est produite lors de la suppression de l'image: $e");
-    }
   }
 }

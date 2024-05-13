@@ -90,7 +90,6 @@ class Movie {
   Future<String> getVideo() async {
     var videos = await fetchVideos(id);
     for (var video in videos.videos) {
-      print(video.name);
       if (video.site == "YouTube") {
         return video.key;
       }

@@ -2,13 +2,16 @@ import 'dart:io';
 import 'package:eventime/models/Video/videos.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:eventime/config/env.dart';
 
 Future<Videos> fetchVideos(idMovie) async {
+  var tmdbApiKey1 = Env.tmdbApiKey1;
+
   final response = await http
       .get(
       Uri.parse('https://api.themoviedb.org/3/movie/$idMovie/videos?language=fr-FR'),
       headers: {
-        HttpHeaders.authorizationHeader: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjYTQ0YjM1ZDE2OGRmZTIyMWQzZWYyMjBjMjZjMGE0ZSIsInN1YiI6IjYyMjIxNzMxZTE2ZTVhMDA0MmUxNTkxMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.hnCvyXL4L1UZtX3VRgD5qoGj1PSW9gavUCwcH_jtYa8'
+        HttpHeaders.authorizationHeader: 'Bearer $tmdbApiKey1'
       }
   );
 

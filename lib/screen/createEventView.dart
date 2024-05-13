@@ -120,7 +120,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                               )
                             : Container(
                                 height: 280,
-                                color: const Color(0XFF303538),
+                                color: const Color(0XFF232323),
                                 child: Center(
                                   child: SvgPicture.asset(
                                     'assets/images/picture.svg',
@@ -137,10 +137,10 @@ class _CreateEventViewState extends State<CreateEventView> {
                               height: 55,
                               width: 260,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF21252A),
+                                color: const Color(0xFF232323),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
-                                    color: const Color.fromRGBO(33, 37, 42, 1)),
+                                    color: const Color(0xFF171717),),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -152,7 +152,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                     width: 38,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(37),
-                                        color: const Color(0xFF21252A),
+                                        color: const Color(0xFF232323),
                                         boxShadow: const [
                                           BoxShadow(
                                               offset: Offset(2, 2),
@@ -200,6 +200,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                                         .grey, // Set the focused border color here
                                   ),
                                 ),
+
                                 hintText: 'Nom de l’événement',
                                 isDense: true,
                                 contentPadding:
@@ -211,7 +212,12 @@ class _CreateEventViewState extends State<CreateEventView> {
                                 fillColor: Colors.transparent,
                                 filled: true,
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12))),
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:  BorderSide(color: Color(0xFF232323)),
+                                ),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 30),
@@ -219,7 +225,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                           width: MediaQuery.of(context).size.width - 16,
                           child: TextFormField(
                             controller: _descriptionEvent,
-                            maxLines: 3,
+                            maxLines: 4,
                             style: const TextStyle(
                                 fontSize: 16.0, color: Colors.white),
                             decoration: InputDecoration(
@@ -240,7 +246,12 @@ class _CreateEventViewState extends State<CreateEventView> {
                                 fillColor: Colors.transparent,
                                 filled: true,
                                 border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12))),
+                                    borderRadius: BorderRadius.circular(12)
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide:  BorderSide(color: Color(0xFF232323)),
+                                ),
+                            ),
                           ),
                         ),
                       ],
@@ -259,7 +270,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                               height: 50,
                               width: MediaQuery.of(context).size.width - 220,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF21252A),
+                                color: const Color(0xFF232323),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
                                     color: const Color.fromRGBO(33, 37, 42, 1)),
@@ -303,7 +314,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                               height: 50,
                               width: MediaQuery.of(context).size.width - 220,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF21252A),
+                                color: const Color(0xFF232323),
                                 borderRadius: BorderRadius.circular(37),
                                 border: Border.all(
                                     color: const Color.fromRGBO(33, 37, 42, 1)),
@@ -363,8 +374,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                             var savedImage;
                             if (_image != null) {
                               // Save picture in local
-                              final appDir =
-                                  await getApplicationDocumentsDirectory();
+                              final appDir = await getApplicationDocumentsDirectory();
                               final fileName = "event_image_$timestamp.jpg";
                               savedImage = await _image!
                                   .copy('${appDir.path}/$fileName');
@@ -419,17 +429,17 @@ class _CreateEventViewState extends State<CreateEventView> {
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width - 16,
+                          margin: const EdgeInsets.only(top: 5),
                           height: 50,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               begin: Alignment(-1, -1),
                               end: Alignment(1, 1),
                               colors: [
-                                Color(0xFFF69F64),
-                                Color.fromRGBO(237, 105, 127, 0.98),
-                                Color(0xFFC963C7),
-                                Color(0xFFB25FF5),
-                                Color(0xFF5882DC),
+                                Color(0xFFFF6321),
+                                Color(0xFFD63341),
+                                Color(0xFF8E3F80),
+                                Color(0xFF007789),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(13),

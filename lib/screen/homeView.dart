@@ -3,9 +3,8 @@ import 'package:provider/provider.dart';
 import '../components/HeadbandComponent.dart';
 import 'package:eventime/components/ListViewHorizontalEvents.dart';
 import 'package:eventime/components/ListViewHorizontalBestMovies.dart';
-import 'package:eventime/components/ListViewHorizontalCategories.dart';
+// import 'package:eventime/components/ListViewHorizontalCategories.dart';
 import '../provider/eventsProvider.dart';
-import 'package:flutter_svg/svg.dart';
 
 class Home extends StatefulWidget {
   final Function(int) onTap;
@@ -29,14 +28,14 @@ class _HomeSate extends State<Home> {
   Widget build(BuildContext context) {
     return Consumer(builder: (context, notifier, child) {
       return Scaffold(
-          backgroundColor: const Color(0xFF121212),
+          backgroundColor: const Color(0xFF171717),
           body: ListView(children: <Widget>[
             Stack(children: <Widget>[
               Container(
-                margin: const EdgeInsets.only(top: 15),
+                margin: const EdgeInsets.only(top: 20),
                 child: const Center(
                   child: Image(
-                    image: AssetImage('assets/images/logo_extend.png'),
+                    image: AssetImage('assets/images/logo.png'),
                     height: 35,
                   )
                 ),
@@ -45,12 +44,12 @@ class _HomeSate extends State<Home> {
                 margin: const EdgeInsets.only(top: 80),
                 child: const HeadBandComponent(),
               ),
+              // Container(
+              //   margin: const EdgeInsets.only(top: 375),
+              //   child: ListViewHorizontalCategories(onTap: widget.onTap,),
+              // ),
               Container(
-                margin: const EdgeInsets.only(top: 400),
-                child: ListViewHorizontalCategories(onTap: widget.onTap,),
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 470, left: 10, right: 10),
+                margin: const EdgeInsets.only(top: 370, left: 10, right: 10),
                 child: const Column(
                   children: [
                     Row(
@@ -71,12 +70,12 @@ class _HomeSate extends State<Home> {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.only(top: 510),
+                margin: const EdgeInsets.only(top: 410),
                 height: 235,
                 child: ListViewHorizontalEvents(onTap: widget.onTap),
               ),
               Container(
-                  margin: const EdgeInsets.only(top: 770, left: 10, right: 10),
+                  margin: const EdgeInsets.only(top: 680, left: 10, right: 10),
                   child: const Column(
                     children: [
                       Row(
@@ -97,7 +96,7 @@ class _HomeSate extends State<Home> {
                   )
               ),
               Container(
-                margin: const EdgeInsets.only(top: 790, bottom: 80),
+                margin: const EdgeInsets.only(top: 705, bottom: 70),
                 child: const ListViewHorizontalBestMovies(),
               ),
             ]),
@@ -105,3 +104,6 @@ class _HomeSate extends State<Home> {
     });
   }
 }
+
+
+

@@ -29,6 +29,19 @@ class Event {
     return "${dateTime.day} ${dateFormat.format(dateTime)} ${dateTime.year}";
   }
 
+  String formatReleaseDateDay() {
+    DateTime dateTime = DateTime.parse(releaseDate.toString());
+
+    return "${dateTime.day}";
+  }
+
+  String formatReleaseDateMonth() {
+    DateTime dateTime = DateTime.parse(releaseDate.toString());
+    final dateFormat = DateFormat('MMM', 'fr');
+
+    return "${dateFormat.format(dateTime)[0].toUpperCase()}${dateFormat.format(dateTime).substring(1)}";
+  }
+
   factory Event.fromJson(Map<String, dynamic> json) {
     String releaseTimeStr = json['releaseTime'] ?? '00:00';
     List<String> timeComponents = releaseTimeStr.split(':');

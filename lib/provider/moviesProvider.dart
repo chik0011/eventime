@@ -14,9 +14,10 @@ class MoviesProvider extends ChangeNotifier {
   late String queryFilter;
 
   int _limitPage = 1;
-
   int _currentPage = 1;
   int _currentPageFilter = 1;
+
+  int genreFilter = 999;
 
   MoviesProvider() {
     initMovies();
@@ -165,5 +166,9 @@ class MoviesProvider extends ChangeNotifier {
       print('Error getting top movies: $e');
       return [];
     }
+  }
+
+  void setGenreFilter(int idGenre) {
+    genreFilter = idGenre;
   }
 }

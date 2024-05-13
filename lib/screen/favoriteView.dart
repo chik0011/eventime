@@ -40,7 +40,6 @@ class _FavoriteViewState extends State<FavoriteView> {
 
   @override
   Widget build(BuildContext context) {
-
     final EventsProvider eventsProvider = Provider.of<EventsProvider>(context);
 
     return Scaffold(
@@ -79,7 +78,7 @@ class _FavoriteViewState extends State<FavoriteView> {
         ),
         backgroundColor: const Color(0xFF121212),
         body: Container(
-          margin: const EdgeInsets.only(top: 25),
+          margin: const EdgeInsets.only(top: 30),
           child: buildEventsList(eventsProvider)
         )
     );
@@ -173,7 +172,7 @@ class _FavoriteViewState extends State<FavoriteView> {
             },
             child: SizedBox(
               width: MediaQuery.of(context).size.width / 2 - 10,
-              height: 250,
+              height: 300,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),
                 child: Image.network(
@@ -193,11 +192,11 @@ class _FavoriteViewState extends State<FavoriteView> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Center(
+              child: Center(
                 child: Column(
                   children: [
                     Text(
-                      "24",
+                      event.formatReleaseDateDay(),
                       style: TextStyle(
                           color: Colors.black,
                           fontWeight: FontWeight.w600,
@@ -205,7 +204,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                       ),
                     ),
                     Text(
-                      "Dec",
+                      event.formatReleaseDateMonth(),
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 9
@@ -238,7 +237,7 @@ class _FavoriteViewState extends State<FavoriteView> {
               },
               child: SizedBox(
                 width: MediaQuery.of(context).size.width / 2 - 10,
-                height: 250,
+                height: 300,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10.0),
                   child: Image.file(
@@ -258,11 +257,11 @@ class _FavoriteViewState extends State<FavoriteView> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Center(
+                child: Center(
                     child: Column(
                       children: [
                         Text(
-                          "24",
+                          event.formatReleaseDateDay(),
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -270,7 +269,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                           ),
                         ),
                         Text(
-                          "Dec",
+                          event.formatReleaseDateMonth(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 9
@@ -298,10 +297,10 @@ class _FavoriteViewState extends State<FavoriteView> {
                 );
               },
               child: Container(
-                height: 250,
+                height: 300,
                 width: MediaQuery.of(context).size.width / 2 - 10,
                 decoration: BoxDecoration(
-                  color: const Color(0XFF303538),
+                  color: const Color(0XFF232323),
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: const Color.fromRGBO(33, 37, 42, 1)),
                 ),
@@ -323,11 +322,11 @@ class _FavoriteViewState extends State<FavoriteView> {
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Center(
+                child: Center(
                     child: Column(
                       children: [
                         Text(
-                          "24",
+                          event.formatReleaseDateDay(),
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -335,7 +334,7 @@ class _FavoriteViewState extends State<FavoriteView> {
                           ),
                         ),
                         Text(
-                          "Dec",
+                          event.formatReleaseDateMonth(),
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: 9
@@ -356,80 +355,194 @@ class _FavoriteViewState extends State<FavoriteView> {
 
   Widget buildEventWidgetSingleInRow(Event event) {
     if (event.typeEvent == "movie") {
-      return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => EventView(
-                idEvent: event.id,
+      return Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EventView(
+                    idEvent: event.id,
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: 150,
+              child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    "https://www.themoviedb.org/t/p/w500_and_h282_face${event.posterPath}",
+                    fit: BoxFit.cover,
+                  )
               ),
             ),
-          );
-        },
-        child: SizedBox(
-          height: 150,
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(10.0),
-              child: Image.network(
-                "https://www.themoviedb.org/t/p/w500_and_h282_face${event.posterPath}",
-                fit: BoxFit.cover,
-              )
           ),
-        ),
+          Positioned(
+            top: 10,
+            right: 10,
+            child: Container(
+              width: 45,
+              padding: const EdgeInsets.only( left: 2, right: 2, top: 7, bottom: 7),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        event.formatReleaseDateDay(),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13
+                        ),
+                      ),
+                      Text(
+                        event.formatReleaseDateMonth(),
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 9
+                        ),
+                      ),
+                    ],
+                  )
+              ),
+            ),
+          ),
+        ]
       );
     } else if (event.typeEvent == "customize") {
       String imagePath = event.posterPath;
       imageFile = File(imagePath);
 
       if (imageFile.existsSync()) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EventView(
-                  idEvent: event.id,
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventView(
+                      idEvent: event.id,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10.0),
+                    child: Image.file(
+                      imageFile,
+                      fit: BoxFit.cover,
+                    )
                 ),
               ),
-            );
-          },
-          child: SizedBox(
-            height: 150,
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(10.0),
-                child: Image.file(
-                  imageFile,
-                  fit: BoxFit.cover,
-                )
             ),
-          ),
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                width: 45,
+                padding: const EdgeInsets.only( left: 2, right: 2, top: 7, bottom: 7),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          event.formatReleaseDateDay(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13
+                          ),
+                        ),
+                        Text(
+                          event.formatReleaseDateMonth(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 9
+                          ),
+                        ),
+                      ],
+                    )
+                ),
+              ),
+            ),
+          ],
         );
       } else {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EventView(
-                  idEvent: event.id,
+        return Stack(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EventView(
+                      idEvent: event.id,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                height: 150,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  color: const Color(0XFF232323),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/images/picture.svg',
+                    height: 100,
+                  ),
                 ),
               ),
-            );
-          },
-          child: Container(
-            height: 150,
-            decoration: BoxDecoration(
-              color: const Color(0XFF303538),
-              borderRadius: BorderRadius.circular(10),
             ),
-            child: Center(
-              child: SvgPicture.asset(
-                'assets/images/picture.svg',
-                height: 100,
+            Positioned(
+              top: 10,
+              right: 10,
+              child: Container(
+                width: 45,
+                padding: const EdgeInsets.only( left: 2, right: 2, top: 7, bottom: 7),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Center(
+                    child: Column(
+                      children: [
+                        Text(
+                          event.formatReleaseDateDay(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13
+                          ),
+                        ),
+                        Text(
+                          event.formatReleaseDateMonth(),
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 9
+                          ),
+                        ),
+                      ],
+                    )
+                ),
               ),
             ),
-          ),
+          ],
         );
       }
     }
