@@ -26,7 +26,11 @@ Eventime is a mobile application developed with Flutter to manage and track even
 
 ## Screenshots
 
+![Screenshot_20240513_153313](https://github.com/chik0011/eventime/assets/62330280/6248aa28-a594-4721-9435-7e12ba8776c9)
 
+![Screenshot_20240513_153358](https://github.com/chik0011/eventime/assets/62330280/3c61e7ba-e8a7-4c9e-968d-890223b242d6)
+
+![Screenshot_20240513_153407](https://github.com/chik0011/eventime/assets/62330280/f5cc427c-05cd-4837-bee2-7b798af56570)
 
 ## Installation
 
